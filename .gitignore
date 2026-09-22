@@ -1,0 +1,10 @@
+# env
+.venv/
+__pycache__/
+*.pyc
+uv.lock
+
+# generated dummy artifacts (dev only)
+data/
+server.log
+server.pid
