@@ -44,7 +44,7 @@ STATE_FILE = os.path.join(DATA_DIR, "state.json")
 PERSIST = os.environ.get("MOCK_PERSIST", "").lower() in ("1", "true", "yes")
 
 HOST = os.environ.get("HOST", "127.0.0.1")
-PORT = int(os.environ.get("PORT", "8000"))
+PORT = int(os.environ.get("PORT", "1337"))
 LOCK = threading.RLock()
 
 

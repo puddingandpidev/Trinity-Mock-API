@@ -15,7 +15,7 @@ seedable API surface. **Not a security tool** — dummy data only.
   `pending → running → completed`; fileDownload/upload tasks create
   `activeDownloads` entries that progress and then appear as records in
   `/data/downloads`; checkin refreshes/creates agents.
-- Port **8000** by default (env `PORT`/`HOST` override).
+- Port **1337** by default (env `PORT`/`HOST` override).
 - Artifacts (dummy payloads/files) written under `./data/` (gitignored).
 
 ## Tasks
@@ -24,7 +24,7 @@ seedable API surface. **Not a security tool** — dummy data only.
 - [x] uv installed (`~/.local/bin/uv`, v0.12.15), venv `.venv` (uv 0.12.15,
       fastapi 0.141.0 + uvicorn 0.49.0), `requirements.txt`, `.pi/wbs/bootstrap-env.sh`
       (re-run to recreate venv from scratch), `.gitignore`.
-      Server verified serving on 8000.
+      Server verified serving on 1337.
 
 ### 2. Implement mock API (all 38 endpoints) — DONE (2026-09-15)
 - [x] `main.py` (single file, stdlib+fastapi only): state module with seeded
@@ -65,7 +65,7 @@ seedable API surface. **Not a security tool** — dummy data only.
 - none
 
 ## Log
-- 2026-09-15: created plan (env: uv+FastAPI, port 8000, in-memory).
+- 2026-09-15: created plan (env: uv+FastAPI, port 1337, in-memory).
 - 2026-09-15: env bootstrap done (uv 0.12.15, .venv, fastapi+uvicorn).
 - 2026-09-15: main.py + smoke_test.py implemented; smoke ALL PASS (52/52);
   38 operations verified in OpenAPI. Handoff ready.

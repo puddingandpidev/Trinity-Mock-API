@@ -9,9 +9,10 @@
 // probed live against the running mock.
 //
 // Usage: node conformance_check.mjs [mockBaseUrl] [realSwaggerPathOrUrl]
-//   mockBaseUrl           default http://127.0.0.1:8000
-//   realSwagger           default <repo>/../PROG7314/teamserver-swagger.json,
-//                         or http(s):// URL (e.g. http://localhost:5069/swagger/v1/swagger.json)
+//   mockBaseUrl           default http://127.0.0.1:1337
+//   realSwagger           default fixtures/teamserver-union-swagger.json (a snapshot of the
+//                         Trinity TeamServer "union" spec); override with a file path or an
+//                         http(s):// URL (e.g. http://localhost:5069/swagger/v1/swagger.json),                         or the REAL_SWAGGER env var.
 // Exit code 0 = path parity + contracts pass, 1 = divergences.
 //
 // See CONFORMANCE.md for the full op-by-op mapping and the documented
@@ -22,8 +23,9 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const mockBase = process.argv[2] || "http://127.0.0.1:8000";
-const realSwagger = process.argv[3] || path.join(here, "..", "PROG7314", "teamserver-swagger.json");
+const mockBase = process.argv[2] || "http://127.0.0.1:1337";
+const realSwagger = process.argv[3] || process.env.REAL_SWAGGER
+  || path.join(here, "fixtures", "teamserver-union-swagger.json");
 
 // HttpListenerDTO property set (TeamServer spec) — every listener row must carry all of these.
 const HTTP_LISTENER_DTO_KEYS = [

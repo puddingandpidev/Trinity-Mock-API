@@ -10,18 +10,20 @@ deployed against.
 
 Mock: `Trinity-Mock-API` @ HEAD.
 
-Method: OpenAPI path+method parity (path params normalised to `{}`) **plus**
-live request/response contract probes. A pure schema diff is not possible
-because the mock's FastAPI endpoints return plain dicts, so their OpenAPI
-response schemas are `{}` (see §D).
+Method: OpenAPI path+method parity (path params normalised to `{}`), a
+**spec-level response-schema diff** (both specs are typed for the DTO
+endpoints), and live request-contract probes. The TeamServer spec used by
+default is the committed snapshot `fixtures/teamserver-union-swagger.json`;
+pass a live URL to diff against a running server instead.
 
 Reproduce:
 
 ```bash
-cd Trinity-Mock-API && .venv/bin/python main.py &          # :8000
-node conformance_check.mjs                                  # path+method + contract gates
+cd Trinity-Mock-API && .venv/bin/python main.py &          # :1337
+node conformance_check.mjs                                  # path + response-schema parity + contracts (fixture spec)
 .venv/bin/python smoke_test.py                              # 38-endpoint behavioural suite
-curl -s http://localhost:5069/swagger/v1/swagger.json -o /tmp/ts.json   # union server on :5069
+# optional: diff against a live TeamServer instead of the fixture
+node conformance_check.mjs http://127.0.0.1:1337 http://localhost:5069/swagger/v1/swagger.json
 ```
 
 ## Verdict

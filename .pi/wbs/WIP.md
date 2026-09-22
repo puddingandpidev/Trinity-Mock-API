@@ -1,7 +1,7 @@
 # WIP — Trinity Mock API
 
 **Status: COMPLETE** (2026-09-15). Smoke test ALL PASS (52/52 checks, all 38
-operations covered). Server was left running at `http://127.0.0.1:8000`
+operations covered). Server was left running at `http://127.0.0.1:1337`
 (pid in `server.pid`) — kill & restart with:
 
 ```bash

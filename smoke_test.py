@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Smoke test for the Trinity mock API. Expects the server at 127.0.0.1:8000."""
+"""Smoke test for the Trinity mock API. Expects the server at 127.0.0.1:1337."""
 import base64
 import json
 import sys
@@ -8,7 +8,7 @@ import urllib.error
 import urllib.request
 import uuid
 
-BASE = "http://127.0.0.1:8000"
+BASE = "http://127.0.0.1:1337"
 FAILS: list[str] = []
 
 

@@ -9,7 +9,7 @@ Stack: Python 3 + FastAPI + Uvicorn (uv venv, no Docker). In-memory state, seede
 at startup. Spec: [`spec.md`](./spec.md). Endpoints: 38 (see README).
 
 > **Status (this session):** sections 0–6 complete and re-verified against a
-> running server (`mock :8000`), except the two on-device steps which need an
+> running server (`mock :1337`), except the two on-device steps which need an
 > emulator/adb that is not provisioned in this container. Section 7 implemented
 > where it did not conflict with the spec or the "38 paths" invariant. Evidence
 > commands and observed results are recorded at the bottom.
@@ -19,7 +19,7 @@ at startup. Spec: [`spec.md`](./spec.md). Endpoints: 38 (see README).
 ## 0. Done = all of these true
 
 - [x] `GET /openapi.json` is live and lists 38 paths.
-      ✅ `curl -s localhost:8000/openapi.json | python3 -c "…len(paths)"` → `38`.
+      ✅ `curl -s localhost:1337/openapi.json | python3 -c "…len(paths)"` → `38`.
       The spec documents `GET /api/v1/tasks/{taskId}` **and**
       `GET /api/v1/tasks/{agentId}` as two endpoints; both are now registered
       (shared classifier), which is what makes the count 38.
@@ -56,12 +56,12 @@ at startup. Spec: [`spec.md`](./spec.md). Endpoints: 38 (see README).
 - [x] `uv run python main.py`
       (fast restart alternative: `./.venv/bin/python main.py`)
 - [x] Confirm the server:
-      `curl -s localhost:8000/openapi.json | python3 -c "import sys,json;print(len(json.load(sys.stdin)['paths']))"`
+      `curl -s localhost:1337/openapi.json | python3 -c "import sys,json;print(len(json.load(sys.stdin)['paths']))"`
       → expect `38` ✅
-- [x] Open `http://127.0.0.1:8000/docs` and eyeball the tag groups.
+- [x] Open `http://127.0.0.1:1337/docs` and eyeball the tag groups.
       ✅ Added OpenAPI tags; `/docs` now groups by
       `payloads · agents · commands · tasks · data · listeners · server · auth · meta`.
-- [x] Ports: default `127.0.0.1:8000`; override with `HOST=0.0.0.0 PORT=9090`
+- [x] Ports: default `127.0.0.1:1337`; override with `HOST=0.0.0.0 PORT=9090`
       when a device/LAN needs to reach it.
       ✅ default `HOST` changed from `0.0.0.0` → `127.0.0.1` to match the docs
       (less accidental LAN exposure); `HOST`/`PORT` env overrides still work.
@@ -71,13 +71,13 @@ at startup. Spec: [`spec.md`](./spec.md). Endpoints: 38 (see README).
 The app is hardcoded to `http://localhost:5069/`
 (`api/NetworkManager.kt`), so bridge the device's localhost to the mock:
 
-- [ ] `adb reverse tcp:5069 tcp:8000`  ⏳ needs adb (not in container)
+- [ ] `adb reverse tcp:5069 tcp:1337`  ⏳ needs adb (not in container)
 - [ ] Build + install the client, then confirm the dashboard shows 3 agents.
       ⏳ needs Android SDK/JDK (not in container)
 - [ ] If using Wi-Fi instead of USB: run the mock with `HOST=0.0.0.0`…  ⏳
 - [ ] Emulator note: host localhost is `10.0.2.2`…  ⏳
 
-> These four are environmental, not code gaps. The mock binds `127.0.0.1:8000`
+> These four are environmental, not code gaps. The mock binds `127.0.0.1:1337`
 > by default and `HOST=0.0.0.0` is supported, so the documented bridge works
 > once the SDK is re-provisioned.
 
@@ -190,31 +190,31 @@ byte-for-byte stable across restarts (see §4).
 
 ```bash
 cd Trinity-Mock-API && uv sync && uv run python main.py &
-adb reverse tcp:5069 tcp:8000 && uv run python smoke_test.py
+adb reverse tcp:5069 tcp:1337 && uv run python smoke_test.py
 ```
 
 ---
 
 ## Evidence (this session)
 
-Server: `./.venv/bin/python main.py` (default `127.0.0.1:8000`).
+Server: `./.venv/bin/python main.py` (default `127.0.0.1:1337`).
 
 | Check | Command | Result |
 |---|---|---|
-| paths | `curl -s localhost:8000/openapi.json \| python3 -c 'import sys,json;print(len(json.load(sys.stdin)["paths"]))'` | `38` |
+| paths | `curl -s localhost:1337/openapi.json \| python3 -c 'import sys,json;print(len(json.load(sys.stdin)["paths"]))'` | `38` |
 | smoke | `.venv/bin/python smoke_test.py` | `ALL PASS` rc=0 |
 | conformance | `node conformance_check.mjs` | `RESULT: ALL PASS` rc=0 |
 | determinism | restart twice + diff agent/task/payload/listener snapshot | identical |
 | persistence | `MOCK_PERSIST=1` create listener → restart → still present | pass |
-| docs | `curl -s -o /dev/null -w '%{http_code}' localhost:8000/docs` | `200` (9 tag groups) |
+| docs | `curl -s -o /dev/null -w '%{http_code}' localhost:1337/docs` | `200` (9 tag groups) |
 
 Spot-check (per §6):
 
 ```bash
-curl -s localhost:8000/api/v1/agents | python3 -m json.tool | head -40
-curl -s localhost:8000/api/v1/listeners | python3 -m json.tool
-curl -s -X POST localhost:8000/api/v1/commands/1/spawn/shell \
+curl -s localhost:1337/api/v1/agents | python3 -m json.tool | head -40
+curl -s localhost:1337/api/v1/listeners | python3 -m json.tool
+curl -s -X POST localhost:1337/api/v1/commands/1/spawn/shell \
      -H 'content-type: application/json' -d '{"command":"whoami"}'
-curl -s localhost:8000/api/v1/tasks/tasks | python3 -m json.tool   # new task visible
-sleep 3 && curl -s localhost:8000/api/v1/tasks/tasks | python3 -m json.tool  # now completed
+curl -s localhost:1337/api/v1/tasks/tasks | python3 -m json.tool   # new task visible
+sleep 3 && curl -s localhost:1337/api/v1/tasks/tasks | python3 -m json.tool  # now completed
 ```

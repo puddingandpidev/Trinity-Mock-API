@@ -21,7 +21,7 @@ uv sync            # once (creates .venv with fastapi + uvicorn)
 uv run python main.py
 ```
 
-Server: `http://127.0.0.1:8000` — interactive docs at `/docs`, OpenAPI at
+Server: `http://127.0.0.1:1337` — interactive docs at `/docs`, OpenAPI at
 `/openapi.json`. Override with `HOST` / `PORT` env vars (e.g. `PORT=9090`).
 
 ## Smoke test
@@ -46,8 +46,9 @@ Responses are declared with Pydantic `response_model`s (`AgentDTO`,
 diffable against the real spec.
 
 ```bash
-# against the running mock; pass a swagger spec as the 2nd arg (file or URL)
-node conformance_check.mjs http://127.0.0.1:8000 /path/to/teamserver-swagger.json
+# uses fixtures/teamserver-union-swagger.json by default; pass a file or URL to override
+node conformance_check.mjs
+node conformance_check.mjs http://127.0.0.1:1337 http://localhost:5069/swagger/v1/swagger.json
 ```
 
 The remaining **18 mock-only extensions** exist for the wider Trinity design
@@ -125,6 +126,7 @@ Trinity-Mock-API/
 ├── smoke_test.py         # 38-endpoint smoke test (stdlib only)
 ├── conformance_check.mjs # TeamServer path parity + devel contract gates
 ├── CONFORMANCE.md        # 1:1 mapping, extensions, deviations, evidence
+├── fixtures/             # committed TeamServer swagger snapshot used for spec diffing
 ├── spec.md               # the spec (given)
 ├── requirements.txt      # fastapi, uvicorn
 ├── .pi/wbs/              # WBS plan + env bootstrap script
