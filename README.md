@@ -60,6 +60,63 @@ See **[CONFORMANCE.md](./CONFORMANCE.md)** for the full op-by-op table, the
 contract fixes, the deliberate deviations kept for the client, and the
 TeamServer-side issues observed during verification.
 
+## Connecting the Android client
+
+The client hard-codes `http://localhost:5069/` (`api/NetworkManager.kt`) and
+permits cleartext HTTP. On a device/emulator `localhost` is the *device*, so
+bridge it to your workstation with `adb reverse`:
+
+```bash
+adb devices                                   # confirm the target
+
+# app -> real Trinity TeamServer on the host (host :5069)
+adb reverse tcp:5069 tcp:5069
+
+# app -> this mock on the host (host :1337); device port stays 5069
+adb reverse tcp:5069 tcp:1337
+
+adb reverse --list                            # verify the mapping
+adb reverse --remove tcp:5069                  # remove one
+adb reverse --remove-all                       # clean up
+```
+
+`adb reverse tcp:<devicePort> tcp:<hostPort>` — the **device** port is what the
+app dials (`localhost:5069`, fixed in the client); the **host** port is whatever
+is listening here (`1337` for this mock, `5069` for the TeamServer).
+
+- Works on emulator and physical devices (API 21+), no root required.
+- Mappings do not survive unplug / `adb kill-server` / emulator restart — re-run them.
+- Multiple devices: `adb -s emulator-5554 reverse tcp:5069 tcp:5069`.
+- Check from inside the device:
+  `adb shell curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5069/docs`.
+- No-adb alternative (needs a code edit + rebuild): `http://10.0.2.2:1337/` for the
+  emulator (host loopback), or your host's LAN IP for a Wi-Fi device.
+
+### Running the client conformance script
+
+`scripts/api-conformance.sh` lives in the **client** repo and resolves this mock
+as a sibling of the client's `PROG7314/` parent, with a `.venv/` present:
+
+```
+<X>/
+├── PROG7314/
+│   └── PROG7314-TrinityMobileClient/
+└── Trinity-Mock-API/          # `uv sync` creates .venv/
+```
+
+```bash
+mkdir -p docs                     # the client's devel branch has no docs/; the
+                                  # script appends its result there (else it exits 1)
+scripts/api-conformance.sh http://127.0.0.1:1337
+```
+
+Skip the client script entirely and use this repo's own gate:
+
+```bash
+.venv/bin/python smoke_test.py    # BASE defaults to http://127.0.0.1:1337
+node conformance_check.mjs        # path + response-schema parity + contracts
+```
+
 ## Endpoints (38)
 
 | Area | Endpoints |
