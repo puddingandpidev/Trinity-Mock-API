@@ -1,5 +1,9 @@
 # Trinity Mock API (dev only)
 
+> ⚠️ **Not a security tool. Not a real C2.** Development/testing only,
+> fictional data, unauthenticated — never expose it to an untrusted network.
+> See [DISCLAIMER.md](./DISCLAIMER.md).
+
 In-memory mock of the Trinity "Team Server" REST API defined in
 [spec.md](./spec.md). **Not a security tool** — used only for local development
 of frontend/tooling against a stable, seedable API surface.
@@ -126,3 +130,19 @@ Trinity-Mock-API/
 ├── .pi/wbs/              # WBS plan + env bootstrap script
 └── data/                 # generated dummy artifacts (gitignored)
 ```
+
+## Licence
+
+[MIT](./LICENSE). This project is not affiliated with, or endorsed by, any
+other project or institution.
+
+## Disclaimer
+
+Not a security tool; no offensive capability; fictional data only; must not be
+exposed to an untrusted network. Read **[DISCLAIMER.md](./DISCLAIMER.md)** in
+full before running or sharing it.
+
+## Attribution
+
+AI-assisted development by the "pi" coding agent — session record in
+[AI.log](./AI.log), details in [NOTICE](./NOTICE).

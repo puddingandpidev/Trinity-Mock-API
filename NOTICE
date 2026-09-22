@@ -1,0 +1,42 @@
+Trinity Mock API
+Copyright (c) 2026 puddingandpidev
+
+Licensed under the MIT License (see LICENSE).
+
+--------------------------------------------------------------------------
+AI-ASSISTED DEVELOPMENT
+--------------------------------------------------------------------------
+
+This project was generated and iterated with the "pi" coding agent. The
+session record is linked in AI.log:
+
+    https://pi.dev/session/#8f644184b29ffb15f4fd3dbecefaea7a
+
+Repository commits are authored as: pi <puddingandpi.dev@gmail.com>
+
+--------------------------------------------------------------------------
+PURPOSE
+--------------------------------------------------------------------------
+
+A development-only, in-memory mock of the Trinity "Team Server" REST API,
+used to develop and test the Android client and tooling for the Trinity
+project (PROG7314 / INSY7315). See DISCLAIMER.md — this is not a security
+tool and carries no offensive capability.
+
+--------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------
+
+All seeded agents, users, hosts, IP addresses, files and payloads are
+fictional (RFC 5737 / example-style values).
+
+--------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+--------------------------------------------------------------------------
+
+Used as dependencies, not vendored. See requirements.txt / pyproject.toml
+for versions; each project ships its own licence text.
+
+    FastAPI   — MIT License
+    Uvicorn   — BSD 3-Clause License
+    Pydantic  — MIT License
